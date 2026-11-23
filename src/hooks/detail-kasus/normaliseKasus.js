@@ -17,6 +17,11 @@ const STRIPPED_WEARABLE_KEYS = new Set([
   'bpm',
 ]);
 
+const ALLOWED_TRIGGER_SOURCES = new Set([
+  'app_button',
+  'tuya_physical_button',
+]);
+
 function filterLegacyWearableKeys(rawDev) {
   if (!rawDev || typeof rawDev !== 'object') return {};
   return Object.fromEntries(
@@ -147,9 +152,10 @@ export function normaliseKasus(raw, tipe) {
         } : null;
 
         const tuya = rawTuya;
-        const triggerSource = raw.trigger_source || rawDev?.trigger_source || (
-          tuya ? 'tuya_physical_button' : (rawDev ? 'app_button' : null)
-        );
+        const rawTriggerSource = raw.trigger_source || rawDev?.trigger_source || null;
+        const triggerSource = ALLOWED_TRIGGER_SOURCES.has(rawTriggerSource)
+          ? rawTriggerSource
+          : (tuya ? 'tuya_physical_button' : (rawDev ? 'app_button' : null));
 
         return {
           ...filterLegacyWearableKeys(rawDev),

@@ -86,6 +86,7 @@ test('normaliseKasus strips legacy smartwatch and heart-rate keys from historica
 
   const result = normaliseKasus(raw, 'sos');
 
+  assert.equal(result.device_info.trigger_source, 'tuya_physical_button');
   assert.equal(result.device_info.mobile.brand, 'Xiaomi');
   assert.equal(result.device_info.tuya.device_id, 'tuya_btn_99');
   assert.equal(result.device_info.is_warning, false);
@@ -93,4 +94,16 @@ test('normaliseKasus strips legacy smartwatch and heart-rate keys from historica
   assert.equal('smartband' in result.device_info, false);
   assert.equal('heart_rate' in result.device_info, false);
   assert.equal('bpm' in result.device_info, false);
+
+  const mobileOnlyLegacy = normaliseKasus({
+    ...raw,
+    trigger_source: 'smartwatch_fall_detection',
+    device_info: {
+      trigger_source: 'smartwatch_fall_detection',
+      mobile: raw.device_info.mobile,
+      smartwatch: raw.device_info.smartwatch,
+    },
+  }, 'sos');
+
+  assert.equal(mobileOnlyLegacy.device_info.trigger_source, 'app_button');
 });
