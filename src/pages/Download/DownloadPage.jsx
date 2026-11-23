@@ -12,14 +12,12 @@ import {
   ExternalLink,
   ChevronRight,
   Volume2,
-  Watch,
   Layers,
   Lock,
   MessageSquare,
   Signal,
   Wifi,
   Battery,
-  Heart,
   Phone,
   Clock,
   Home,
@@ -381,10 +379,10 @@ export default function DownloadPage() {
                     {/* Telemetry Indicator Strip */}
                     <div className="bg-white rounded-xl p-2 border border-slate-200 shadow-2xs grid grid-cols-2 gap-2 text-left">
                       <div className="flex items-center gap-1.5">
-                        <Heart size={13} className="text-red-500 fill-red-500 animate-pulse" />
+                        <Radio size={13} className="text-[#0b6f61]" />
                         <div>
-                          <p className="text-[9px] font-bold text-slate-800">76 BPM</p>
-                          <p className="text-[7.5px] text-slate-400">BLE Smartband</p>
+                          <p className="text-[9px] font-bold text-slate-800">Tombol Tuya</p>
+                          <p className="text-[7.5px] text-slate-400">Siaga Terhubung</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-1.5">
@@ -420,8 +418,8 @@ export default function DownloadPage() {
                           <span className="text-[9.5px] font-bold text-slate-800">Bahasa Isyarat BISINDO</span>
                         </div>
                         <div className="flex-1 bg-white border border-emerald-300 rounded-lg p-1.5 text-center">
-                          <span className="block text-[8px] text-slate-500 uppercase">Status Korban</span>
-                          <span className="text-[9.5px] font-bold text-emerald-700">BPM Normal (76)</span>
+                          <span className="block text-[8px] text-slate-500 uppercase">Sumber Sinyal</span>
+                          <span className="text-[9.5px] font-bold text-emerald-700">Tombol Fisik Tuya</span>
                         </div>
                       </div>
                       <button
@@ -723,11 +721,11 @@ export default function DownloadPage() {
 
           <div className="bg-white p-5 rounded-2xl border border-slate-200 shadow-2xs hover:border-emerald-400 hover:shadow-md transition-all duration-200">
             <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-700 flex items-center justify-center mb-3">
-              <Watch size={18} />
+              <Radio size={18} />
             </div>
-            <h3 className="text-sm font-bold text-slate-900 mb-1">Telemetri BLE Smartwatch</h3>
+            <h3 className="text-sm font-bold text-slate-900 mb-1">Telemetri Perangkat &amp; IoT</h3>
             <p className="text-xs text-slate-600 leading-relaxed">
-              Kompatibel dengan sensor jam tangan pintar Bluetooth Low Energy untuk memantau detak jantung dan mendeteksi kondisi darurat vital.
+              Memantau status baterai ponsel, akurasi GPS, dan koneksi tombol darurat fisik Tuya secara langsung di posko.
             </p>
           </div>
 

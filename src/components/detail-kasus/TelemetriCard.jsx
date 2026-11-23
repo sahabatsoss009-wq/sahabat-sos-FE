@@ -1,6 +1,6 @@
 import {
   Smartphone, Radio, AlertTriangle, Battery, BatteryCharging,
-  Wifi, WifiOff, MapPin, Watch, HeartPulse
+  Wifi, WifiOff, MapPin
 } from 'lucide-react';
 
 /**
@@ -45,22 +45,7 @@ export default function TelemetriCard({
           <Smartphone size={12} className="text-[#0b6f61]" />
           Telemetri Perangkat &amp; IoT
         </span>
-        {deviceInfo.trigger_source === 'smartwatch_fall_detection' || deviceInfo.smartwatch?.fall_detected ? (
-          <span className="inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200 animate-pulse">
-            <AlertTriangle size={10} className="text-rose-600" />
-            Deteksi Jatuh Smartwatch
-          </span>
-        ) : deviceInfo.trigger_source === 'smartband_heart_rate' || (deviceInfo.smartwatch?.heart_rate != null && deviceInfo.trigger_source?.includes('heart_rate')) ? (
-          <span className="inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-800 border border-rose-200">
-            <HeartPulse size={10} className="text-rose-600" />
-            Sensor Detak Jantung
-          </span>
-        ) : deviceInfo.trigger_source === 'smartwatch_button' || deviceInfo.smartwatch ? (
-          <span className="inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-sky-50 text-sky-800 border border-sky-200">
-            <Watch size={10} className="text-sky-700" />
-            Smartwatch / Smartband
-          </span>
-        ) : deviceInfo.tuya ? (
+        {deviceInfo.tuya ? (
           <span className="inline-flex items-center gap-1 text-[9.5px] font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
             <Radio size={10} className="text-emerald-700" />
             IoT Tuya Terhubung
@@ -223,91 +208,6 @@ export default function TelemetriCard({
               </span>
               <span className="font-mono text-[7.5px] text-slate-500 truncate block leading-none mt-0.5">
                 ID: {deviceInfo.tuya.device_id || 'tuya_device'}
-              </span>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Grid 3: Perangkat Smartwatch & Biometrik Korban (Jika Terdeteksi) */}
-      {deviceInfo.smartwatch && (
-        <div className="space-y-1 pt-1.5 border-t border-slate-100">
-          <span className="text-[9px] font-extrabold uppercase tracking-wider text-slate-600 flex items-center justify-between">
-            <span className="flex items-center gap-1">
-              <Watch size={10} className="text-sky-600" />
-              {deviceInfo.tuya ? '3.' : '2.'} Smartwatch / Smartband &amp; Biometrik
-            </span>
-            <span className="text-[8.5px] font-normal text-slate-600">
-              Pemicu: <strong className={deviceInfo.smartwatch.fall_detected ? 'text-rose-700 font-bold' : 'text-sky-800'}>
-                {deviceInfo.smartwatch.trigger_type || (deviceInfo.smartwatch.fall_detected ? 'Deteksi Jatuh Jam' : (deviceInfo.smartwatch.heart_rate != null ? 'Sensor Detak Jantung' : 'Tombol SOS Jam'))}
-              </strong>
-            </span>
-          </span>
-          <div className="grid grid-cols-4 gap-1.5 text-[11px]">
-            {/* Detak Jantung / BPM */}
-            <div className={`p-1.5 rounded-xl border flex items-center gap-1.5 ${
-              deviceInfo.smartwatch.heart_rate != null && (deviceInfo.smartwatch.heart_rate > 120 || deviceInfo.smartwatch.heart_rate < 50)
-                ? 'bg-rose-50 border-rose-200 text-rose-900'
-                : 'bg-rose-50/40 border-rose-100 text-slate-800'
-            }`}>
-              <HeartPulse size={14} className="text-rose-600 shrink-0" />
-              <div className="min-w-0">
-                <span className="text-[8px] font-bold text-slate-500 block uppercase leading-none">Denyut Nadi</span>
-                <span className="font-black text-[11px] leading-tight block">
-                  {deviceInfo.smartwatch.heart_rate != null ? `${deviceInfo.smartwatch.heart_rate} BPM` : 'N/A'}
-                </span>
-                <span className="text-[8px] font-semibold text-slate-600 leading-none truncate block">
-                  {deviceInfo.smartwatch.heart_rate != null ? (deviceInfo.smartwatch.heart_rate > 120 ? 'Tinggi' : deviceInfo.smartwatch.heart_rate < 50 ? 'Rendah' : 'Normal') : 'Sensor Jam'}
-                </span>
-              </div>
-            </div>
-
-            {/* Status Jatuh */}
-            <div className={`p-1.5 rounded-xl border flex items-center gap-1.5 ${
-              deviceInfo.smartwatch.fall_detected
-                ? 'bg-rose-100 border-rose-300 text-rose-900 font-bold'
-                : 'bg-slate-50 border-slate-100 text-slate-700'
-            }`}>
-              <AlertTriangle size={14} className={deviceInfo.smartwatch.fall_detected ? 'text-rose-700 shrink-0' : 'text-slate-400 shrink-0'} />
-              <div className="min-w-0">
-                <span className="text-[8px] font-bold text-slate-500 block uppercase leading-none">Deteksi Jatuh</span>
-                <span className={`font-black text-[10.5px] leading-tight block truncate ${deviceInfo.smartwatch.fall_detected ? 'text-rose-700' : 'text-emerald-700'}`}>
-                  {deviceInfo.smartwatch.fall_detected ? 'JATUH!' : 'Aman'}
-                </span>
-                <span className="text-[8px] font-semibold text-slate-600 leading-none truncate block">
-                  Akselerometer
-                </span>
-              </div>
-            </div>
-
-            {/* Baterai Jam */}
-            <div className={`p-1.5 rounded-xl border flex items-center gap-1.5 ${
-              deviceInfo.smartwatch.battery_level != null && deviceInfo.smartwatch.battery_level < 20
-                ? 'bg-amber-50 border-amber-200 text-amber-900'
-                : 'bg-emerald-50/50 border-emerald-100 text-slate-800'
-            }`}>
-              <Battery size={14} className={
-                deviceInfo.smartwatch.battery_level != null && deviceInfo.smartwatch.battery_level < 20 ? 'text-amber-600 shrink-0' : 'text-sky-600 shrink-0'
-              } />
-              <div className="min-w-0">
-                <span className="text-[8px] font-bold text-slate-500 block uppercase leading-none">Baterai Jam</span>
-                <span className="font-black text-[11px] leading-tight block">
-                  {deviceInfo.smartwatch.battery_level != null ? `${deviceInfo.smartwatch.battery_level}%` : 'Normal'}
-                </span>
-                <span className="text-[8px] font-semibold text-slate-600 leading-none truncate block">
-                  {deviceInfo.smartwatch.battery_status || (deviceInfo.smartwatch.battery_level != null ? 'Normal' : 'Terhubung')}
-                </span>
-              </div>
-            </div>
-
-            {/* Model & Koneksi Jam */}
-            <div className="bg-slate-50 p-1.5 rounded-xl border border-slate-100">
-              <span className="text-[8px] font-bold text-slate-500 block uppercase leading-none mb-0.5">Model Jam</span>
-              <span className="font-bold text-slate-800 truncate block text-[10px] leading-tight" title={deviceInfo.smartwatch.device_name}>
-                {deviceInfo.smartwatch.device_model || deviceInfo.smartwatch.device_name || 'Smartband'}
-              </span>
-              <span className="text-[7.5px] font-semibold text-sky-700 truncate block leading-none mt-0.5">
-                BLE / Health Connect
               </span>
             </div>
           </div>
