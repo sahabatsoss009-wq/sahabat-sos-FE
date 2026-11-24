@@ -15,6 +15,8 @@ const STRIPPED_WEARABLE_KEYS = new Set([
   'smartband',
   'heart_rate',
   'bpm',
+  'heart_rate_bpm',
+  'fall_detected',
 ]);
 
 const ALLOWED_TRIGGER_SOURCES = new Set([
@@ -152,10 +154,11 @@ export function normaliseKasus(raw, tipe) {
         } : null;
 
         const tuya = rawTuya;
-        const rawTriggerSource = raw.trigger_source || rawDev?.trigger_source || null;
-        const triggerSource = ALLOWED_TRIGGER_SOURCES.has(rawTriggerSource)
-          ? rawTriggerSource
-          : (tuya ? 'tuya_physical_button' : (rawDev ? 'app_button' : null));
+        const hasValidDevTrigger = ALLOWED_TRIGGER_SOURCES.has(rawDev?.trigger_source);
+        const hasValidTopTrigger = ALLOWED_TRIGGER_SOURCES.has(raw.trigger_source);
+        const triggerSource = hasValidDevTrigger
+          ? rawDev.trigger_source
+          : (tuya ? 'tuya_physical_button' : (hasValidTopTrigger ? raw.trigger_source : (rawDev ? 'app_button' : null)));
 
         return {
           ...filterLegacyWearableKeys(rawDev),

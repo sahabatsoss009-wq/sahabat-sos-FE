@@ -7,11 +7,13 @@ test('normaliseKasus preserves mobile and Tuya telemetry for active SOS', () => 
     id: 42,
     status_raw: 'belum ditangani',
     jenis_laporan: 'Darurat SOS',
+    trigger_source: 'app_button', // Top-level default fallback from KasusAktifController
     lokasi: { alamat: 'Jl. Malioboro', latitude: -7.7925, longitude: 110.3658 },
     pelapor: { id: 7, name: 'Budi', no_telp: '081234567890', kontak_darurat: [] },
     battery_level: 85,
     signal_strength: '4G',
     device_info: {
+      trigger_source: 'tuya_physical_button',
       is_online: true,
       mobile: {
         brand: 'Samsung',
