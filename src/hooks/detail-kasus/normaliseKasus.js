@@ -153,7 +153,15 @@ export function normaliseKasus(raw, tipe) {
           is_online: isOnline,
         } : null;
 
-        const tuya = rawTuya;
+        const rawTuyaBat = rawTuya?.battery_level ?? rawTuya?.battery ?? null;
+        const parsedTuyaBat = rawTuyaBat !== null && rawTuyaBat !== undefined && Number.isFinite(Number(rawTuyaBat)) && Number(rawTuyaBat) >= 0 && Number(rawTuyaBat) <= 100
+          ? Number(rawTuyaBat)
+          : null;
+        const tuya = rawTuya ? {
+          ...rawTuya,
+          battery_level:  parsedTuyaBat,
+          is_battery_low: parsedTuyaBat !== null && parsedTuyaBat < 20,
+        } : null;
         const hasValidDevTrigger = ALLOWED_TRIGGER_SOURCES.has(rawDev?.trigger_source);
         const hasValidTopTrigger = ALLOWED_TRIGGER_SOURCES.has(raw.trigger_source);
         const triggerSource = hasValidDevTrigger

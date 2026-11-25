@@ -109,3 +109,47 @@ test('normaliseKasus strips legacy smartwatch and heart-rate keys from historica
 
   assert.equal(mobileOnlyLegacy.device_info.trigger_source, 'app_button');
 });
+
+test('normaliseKasus sanitizes negative Tuya battery sentinel and preserves app_button trigger with paired Tuya', () => {
+  const sentinelRaw = {
+    id: 101,
+    status_raw: 'belum ditangani',
+    jenis_laporan: 'Darurat SOS',
+    lokasi: { alamat: 'Jl. Sudirman', latitude: -7.78, longitude: 110.37 },
+    pelapor: { id: 9, name: 'Rina', no_telp: '081277776666', kontak_darurat: [] },
+    battery_level: 78,
+    device_info: {
+      trigger_source: 'app_button',
+      mobile: { brand: 'Samsung', model: 'A34', battery_level: 78, signal_strength: '4G' },
+      tuya: {
+        device_id: 'sim_device_001',
+        device_name: 'Tombol Simulasi',
+        battery_level: -1,
+        is_battery_low: true,
+        is_online: false,
+      },
+    },
+  };
+
+  const sentinelResult = normaliseKasus(sentinelRaw, 'sos');
+  assert.equal(sentinelResult.device_info.trigger_source, 'app_button');
+  assert.equal(sentinelResult.device_info.tuya.battery_level, null);
+  assert.equal(sentinelResult.device_info.tuya.is_battery_low, false);
+  assert.equal(sentinelResult.device_info.is_warning, false);
+
+  const rawLowTuya = normaliseKasus({
+    ...sentinelRaw,
+    device_info: {
+      trigger_source: 'tuya_physical_button',
+      mobile: sentinelRaw.device_info.mobile,
+      tuya: {
+        device_id: 'tuya_btn_low',
+        battery_level: 12,
+        is_online: true,
+      },
+    },
+  }, 'sos');
+  assert.equal(rawLowTuya.device_info.tuya.battery_level, 12);
+  assert.equal(rawLowTuya.device_info.tuya.is_battery_low, true);
+  assert.equal(rawLowTuya.device_info.is_warning, true);
+});
